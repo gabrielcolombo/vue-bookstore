@@ -1,5 +1,5 @@
 {
-  "name": "vue-library",
+  "name": "vue-bookstore",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
