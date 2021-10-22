@@ -1,5 +1,9 @@
 <template>
-  <b-card class="book" :announcement="parseToPercentage(details.discount)">
+  <b-card
+    class="book"
+    :highlight="isInCart(details.id)"
+    :announcement="parseToPercentage(details.discount)"
+  >
     <template v-slot:header>
       <h3 class="book__title truncate" :title="details.title">{{details.title}}</h3>
       <small>
@@ -23,10 +27,9 @@
     <template v-slot:footer>
       <b-button
         :block="true"
-        :disabled="isInCart(details.id)"
-        @click="addItem({ ...details, quantity: 1 })"
+        @click="handleCartInteraction({ ...details, quantity: 1 })"
       >
-        {{!isInCart(details.id) ? 'Adicionar' : 'Adicionado'}} ao carrinho
+        {{!isInCart(details.id) ? 'Adicionar ao' : 'Remover do'}} carrinho
       </b-button>
     </template>
   </b-card>
@@ -48,7 +51,14 @@ export default {
   methods: {
     ...mapActions({
       addItem: 'cart/addItem',
+      removeItem: 'cart/removeItem',
     }),
+
+    handleCartInteraction(item) {
+      (!this.isInCart(item.id))
+        ? this.addItem(item)
+        : this.removeItem(item)
+    },
 
     isInCart(id) {
       return this.cart.items.find(item => item.id === id);

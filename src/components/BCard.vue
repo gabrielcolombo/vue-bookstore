@@ -24,6 +24,9 @@ export default {
     },
     interactive: {
       default: false,
+    },
+    highlight: {
+      default: false,
     }
   },
 
@@ -32,6 +35,7 @@ export default {
       const styles = ['card'];
 
       if (this.interactive) styles.push('card--interactive');
+      if (this.highlight) styles.push('card--highlighted');
 
       return styles.join(' ').trim();
     }
@@ -107,6 +111,10 @@ export default {
       background: #d2634b;
       cursor: pointer;
     }
+  }
+
+  &--highlighted {
+    border-top: 5px solid #cd5237;
   }
 }
 </style>
