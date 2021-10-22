@@ -34,6 +34,8 @@ export default {
   }
 
   body {
+    background: #f9f9f9;
     font-family: 'Nunito Sans', sans-serif;
+    padding: 30px 0;
   }
 </style>

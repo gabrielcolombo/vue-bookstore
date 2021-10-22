@@ -31,7 +31,7 @@
     display: inline-block;
     font-size: .625em;
     font-weight: 600;
-    padding: 15px 30px;
+    padding: 10px 30px;
     text-align: center;
     text-transform: uppercase;
     transition: all .15s ease-out;

@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <b-container>
-      Cart ({{count}})
+      <b-link to="cart">Meu carrinho ({{count}})</b-link> 
     </b-container>
   </header>
 </template>
@@ -11,10 +11,7 @@ import { mapGetters } from "vuex";
 import { BLink, BContainer } from "@/components";
 
 export default {
-  components: {
-    BLink,
-    BContainer
-  },
+  components: { BLink, BContainer },
 
   computed: {
     ...mapGetters("cart", ["count"]),

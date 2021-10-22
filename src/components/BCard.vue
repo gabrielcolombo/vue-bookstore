@@ -1,6 +1,6 @@
 <template>
-  <div class="card">
-    <span class="card__ribbon">{{announcement}}</span>
+  <div :class="styles">
+    <span class="card__ribbon" v-if="announcement !== null && !interactive">{{announcement}}</span>
 
     <div class="card__header">
       <slot name="header"></slot>
@@ -18,14 +18,34 @@
 
 <script>
 export default {
-  props: ['announcement']
+  props: {
+    announcement: {
+      default: null,
+    },
+    interactive: {
+      default: false,
+    }
+  },
+
+  computed: {
+    styles() {
+      const styles = ['card'];
+
+      if (this.interactive) styles.push('card--interactive');
+
+      return styles.join(' ').trim();
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .card {
-  background: #f4f4f4;
+  background: #e9e9e9;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 15px;
   position: relative;
 
@@ -35,7 +55,7 @@ export default {
     border-radius: 15px;
     border-bottom-right-radius: 0;
     font-size: .625em;
-    font-weight: 800;
+    font-weight: 700;
     padding: 5px 15px;
     position: absolute;
     right: -5px;
@@ -75,6 +95,18 @@ export default {
 
   &__body {
     margin: 15px 0;
+  }
+
+  &--interactive {
+    background: #cd5237;
+    color: #fff;
+    transition: background .15s ease-out;
+
+    &:hover,
+    &:focus {
+      background: #d2634b;
+      cursor: pointer;
+    }
   }
 }
 </style>

@@ -1,7 +1,8 @@
+import BBadge from "@/components/BBadge.vue";
 import BButton from "@/components/BButton.vue";
 import BCard from "@/components/BCard.vue";
 import BContainer from "@/components/BContainer.vue";
 import BLink from "@/components/BLink.vue";
-import BHeader from "@/components/BHeader.vue";
+import BSpinner from "@/components/BSpinner.vue";
 
-export { BButton, BCard, BContainer, BHeader, BLink };
+export { BBadge, BButton, BCard, BContainer, BLink, BSpinner };

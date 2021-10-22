@@ -1,17 +1,5 @@
 <template>
-  <header>
-    <b-container>
-
-    </b-container>
-  </header>
-
-  <main>
-    <b-container>
-      
-    </b-container>
-  </main>
-
-  <!-- Home {{application.client.connected}}
+  Home {{application.client.connected}}
 
   <br><br>
 
@@ -22,7 +10,7 @@
 
   <button @click="add">Add</button>
   <button @click="update">Update</button>
-  <button @click="remove">Remove</button> -->
+  <button @click="remove">Remove</button>
 </template>
 
 <script>
