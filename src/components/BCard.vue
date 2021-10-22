@@ -1,0 +1,80 @@
+<template>
+  <div class="card">
+    <span class="card__ribbon">{{announcement}}</span>
+
+    <div class="card__header">
+      <slot name="header"></slot>
+    </div>
+
+    <div class="card__body">
+      <slot name="body"></slot>
+    </div>
+
+    <div class="card__footer">
+      <slot name="footer"></slot>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ['announcement']
+}
+</script>
+
+<style lang="scss" scoped>
+.card {
+  background: #f4f4f4;
+  border-radius: 10px;
+  padding: 15px;
+  position: relative;
+
+  &__ribbon {
+    background: #cd5237;
+    color: #fff;
+    border-radius: 15px;
+    border-bottom-right-radius: 0;
+    font-size: .625em;
+    font-weight: 800;
+    padding: 5px 15px;
+    position: absolute;
+    right: -5px;
+    text-shadow: 0 15px 5px -10px transparentize(#222, .95);
+    top: 10px;
+
+    &::before,
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      height: 10px;
+      right: 0;
+      width: 5px;
+    }
+
+    &::before {
+      background: #903927;
+      border-bottom-right-radius: 15px;
+      border-top-right-radius: 15px;
+      top: 24px;
+      z-index: 2;
+    }
+
+    &::after {
+      background: #cd5237;
+      top: 20px;
+      z-index: -1;
+    }
+  }
+
+  &__header,
+  &__body,
+  &__footer {
+    width: 100%;
+  }
+
+  &__body {
+    margin: 15px 0;
+  }
+}
+</style>

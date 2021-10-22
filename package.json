@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "vue": "^3.2.16",
+    "vue-grid-responsive": "^1.2.1",
     "vue-router": "4",
     "vuex": "^4.0.2"
   },

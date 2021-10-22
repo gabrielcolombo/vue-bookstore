@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   client: {
     connected: true,
+    theme: "light",
   },
   search: {
     history: [],
@@ -19,6 +20,10 @@ const ApplicationModule = {
       state.client.connected = value;
     },
 
+    setClientTheme(state, value) {
+      state.client.theme = value;
+    },
+
     setSearchHistory(state, value) {
       state.search.history = [...state.search.history, value];
     },
@@ -26,6 +31,13 @@ const ApplicationModule = {
   actions: {
     setClientConnected({ commit }, value) {
       commit("setClientConnected", value);
+    },
+
+    toggleClientTheme({ commit, state }) {
+      commit(
+        "setClientTheme",
+        state.client.theme === "light" ? "dark" : "light"
+      );
     },
 
     storeSearchedValue({ commit }, value) {

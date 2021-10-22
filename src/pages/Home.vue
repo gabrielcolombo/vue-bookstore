@@ -1,27 +1,45 @@
 <template>
-  Home {{application.client.connected}}
+  <header>
+    <b-container>
 
-  <br><br>
+    </b-container>
+  </header>
 
-  Cart ({{ count }}) - Total: {{ total}}
-
-  <br>
-  {{ cart.items }}
-
-  <button @click="add">Add</button>
-  <button @click="update">Update</button>
-  <button @click="remove">Remove</button>
+  <main>
+    <b-container>
+      <row container :gutter="12">
+        <column :md="4" :lg="3" v-for="num in 10">
+          <b-book :details="{id: num, ...book}" />
+        </column>
+      </row>
+    </b-container>
+  </main>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
-
-let id = 1;
+import { Row, Column } from "vue-grid-responsive";
+import { BContainer, BCard } from '@/components';
+import { BBook } from '@domains/Books/components';
 
 export default {
+  components: { Row, Column, BContainer, BCard, BBook },
+
+  data() {
+    return {
+      book: {
+        title: 'Securing DevOps',
+        author: 'Julien Vehent',
+        publisher: 'Manning',
+        description: 'An application running in the cloud can benefit from incredible efficiencies, but they come with unique security threats too.',
+        thumbnail: 'https://itbook.store/img/books/9781617294136.png',
+        price: '$26.98',
+      }
+    }
+  },
+
   computed: {
-    ...mapState(["application", "cart"]),
-    ...mapGetters("cart", ["count", "total"]),
+    ...mapState(["application", "cart", "bookshelf"]),
   },
 
   methods: {

@@ -1,7 +1,7 @@
 import { createStore } from "vuex";
-import { ApplicationModule } from "@/domains/Application/store";
-import { BookshelfModule } from "@/domains/Books/store";
-import { CartModule } from "@/domains/Cart/store";
+import { ApplicationModule } from "@domains/Application/store";
+import { BookshelfModule } from "@domains/Books/store";
+import { CartModule } from "@domains/Cart/store";
 
 const store = createStore({
   modules: {

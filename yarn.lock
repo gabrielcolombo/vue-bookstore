@@ -560,6 +560,11 @@ vite@^2.6.4:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vue-grid-responsive@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/vue-grid-responsive/-/vue-grid-responsive-1.2.1.tgz#6bdd5710c2721bbd0080f001a44e8ebb3e301eb0"
+  integrity sha512-GGKndaU1uuG7qq9GVsS211wvhWXAZXknXA64JTu8/ctg5bsNDgsFujkRiX5f+o4BeQDxDjfkKdj3b9v5vNd7pQ==
+
 vue-router@4:
   version "4.0.12"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.12.tgz#8dc792cddf5bb1abcc3908f9064136de7e13c460"
