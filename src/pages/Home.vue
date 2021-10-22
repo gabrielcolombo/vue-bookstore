@@ -43,7 +43,7 @@
                     {{count === 0 ? 'Seu carrinho está vazio' : `Seu carrinho (${count})`}}
                   </h2>
 
-                  <b-link to="/cart" text="Ir para o checkout" icon="arrow-right" v-if="count > 0" />
+                  <b-link to="/cart" text="Ir para o carrinho" icon="arrow-right" v-if="count > 0" />
                 </div>
               </template>
             </b-card>

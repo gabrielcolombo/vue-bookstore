@@ -19,7 +19,7 @@
 
         <div class="about">
           <p class="about__info">{{details.subtitle}}</p>
-          <strong class="about__price">{{parseToBRL(details.price)}}</strong>
+          <strong class="about__price">R${{parseToBRL(details.price) || '0,00'}}</strong>
         </div>
       </div>
     </template>
@@ -38,10 +38,12 @@
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
 import { BButton, BCard } from '@/components';
+import { CurrencyMixin } from "@/mixins";
 
 export default {
   props: ['details'],
   components: { BButton, BCard },
+  mixins: [CurrencyMixin],
 
   computed: {
     ...mapState(["application", "cart"]),
@@ -67,10 +69,6 @@ export default {
     parseToPercentage(value) {
       return (value) ? `-${value}%` : null;
     },
-
-    parseToBRL(value) {
-      return `R$${Number(value).toLocaleString('pt-BR')}`;
-    }
   },
 }
 </script>
@@ -106,6 +104,8 @@ export default {
     }
 
     .about {
+      width: 100%;
+      
       &__info {
         color: #646464;
         font-size: .875em;
@@ -114,6 +114,7 @@ export default {
 
       &__price {
         color: #383838;
+        display: block;
       }
     }
   }
