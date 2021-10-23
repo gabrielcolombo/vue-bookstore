@@ -1,7 +1,12 @@
+import { Storage } from "@/services";
+
+const history = Storage.get("SEARCHED_TERMS");
+const lastResults = Storage.get("LAST_RESULTS");
+
 const INITIAL_STATE = {
   search: {
-    history: [],
-    lastResults: [],
+    history: history ? JSON.parse(history) : [],
+    lastResults: lastResults ? JSON.parse(lastResults) : [],
     hasInteractedPreviously: false,
   },
 };
@@ -16,16 +21,29 @@ const BookshelfModule = {
     lastSearchResults(state) {
       return state.search.lastResults;
     },
+
+    lastSearchQueries(state) {
+      const { length } = state.search.history;
+
+      return state.search.history.slice(Math.max(length - 5, 0));
+    },
   },
   mutations: {
     setSearchHistory(state, value) {
-      state.search.history = Array.from(
-        new Set([...state.search.history, value])
+      const history = Array.from(new Set([...state.search.history, value]));
+
+      state.search.history = history;
+
+      Storage.set(
+        "SEARCHED_TERMS",
+        JSON.stringify(history.slice(Math.max(length - 5, 0)))
       );
     },
 
     setLastSearchResults(state, value) {
       state.search.lastResults = value;
+
+      Storage.set("LAST_RESULTS", JSON.stringify(value));
     },
 
     setPreviousInteraction(state, value) {

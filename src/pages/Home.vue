@@ -20,14 +20,14 @@
       <row container :gutter="12">
         <column :md="12">
           <div v-if="!isFirstAccess && lastSearchedValue">
-            <small>Suas últimas pesquisas:</small>
+            <small>Suas pesquisas recentes:</small>
 
             <b-badge
               :interactive="true"
               :text="term"
               @click="search(term)"
               @keyup.enter="search(term)"
-              v-for="term in bookshelf.search.history"
+              v-for="term in lastSearchQueries"
             />
           </div>
         </column>
@@ -129,7 +129,7 @@ export default {
 
   computed: {
     ...mapState(["application", "cart", "bookshelf"]),
-    ...mapGetters("bookshelf", ["lastSearchedValue"]),
+    ...mapGetters("bookshelf", ["lastSearchedValue", "lastSearchQueries"]),
     ...mapGetters("cart", ["count"]),
 
     isFirstAccess() {

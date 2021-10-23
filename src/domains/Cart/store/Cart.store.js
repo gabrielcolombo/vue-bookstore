@@ -1,5 +1,9 @@
+import { Storage } from "@/services";
+
+const items = Storage.get("CART_ITEMS");
+
 const INITIAL_STATE = {
-  items: [],
+  items: items ? JSON.parse(items) : [],
 };
 
 const CartModule = {
@@ -22,7 +26,11 @@ const CartModule = {
   },
   actions: {
     addItem({ commit, state }, value) {
-      commit("setCartItems", [...state.items, value]);
+      const items = [...state.items, value];
+
+      commit("setCartItems", items);
+
+      Storage.set("CART_ITEMS", JSON.stringify(items));
     },
 
     updateItem({ commit, state }, value) {
@@ -35,12 +43,16 @@ const CartModule = {
       });
 
       commit("setCartItems", items);
+
+      Storage.set("CART_ITEMS", JSON.stringify(items));
     },
 
     removeItem({ commit, state }, value) {
       const items = state.items.filter((item) => item.id !== value.id);
 
       commit("setCartItems", items);
+
+      Storage.set("CART_ITEMS", JSON.stringify(items));
     },
   },
 };
