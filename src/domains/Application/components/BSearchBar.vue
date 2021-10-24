@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <row container :gutter="12">
+    <row :gutter="12">
       <column :md="12">
         <div class="search__form">
           <b-input
@@ -18,7 +18,7 @@
       </column>
     </row>
 
-    <row container :gutter="12" v-if="showLatestQueries" class="search__tags">
+    <row :gutter="12" v-if="showLatestQueries" class="search__tags">
       <column :md="12">
         <small>Suas pesquisas recentes:</small>
 
@@ -96,7 +96,6 @@ export default {
     }
 
     @media all and (min-width: 768px) {
-
       &__form {
         flex-direction: row;
 

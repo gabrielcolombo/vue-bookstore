@@ -48,6 +48,8 @@ const BookshelfModule = {
 
     setPreviousInteraction(state, value) {
       state.search.hasInteractedPreviously = value;
+
+      Storage.set("PREVIOUS_INTERACTION", value);
     },
   },
   actions: {

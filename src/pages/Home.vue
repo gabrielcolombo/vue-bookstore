@@ -1,92 +1,83 @@
 <template>
-  <main>
-    <b-container>
-      <row container :gutter="12">
-        <column :md="12">
-          <h1>Livraria Flip</h1>
-        </column>
-      </row>
+  <b-search-bar
+    v-model="query"
+    :loading="loading"
+    :showLatestQueries="!isFirstAccess && !!lastSearchedValue"
+    @api:response="this.onSearchResponse"
+    @interaction:started="this.onSearchRequest"
+    @interaction:completed="this.onSearchCompleted"
+  />
 
-      <search-bar
-        v-model="query"
-        :loading="loading"
-        :showLatestQueries="!isFirstAccess && !!lastSearchedValue"
-        @api:response="this.onSearchResponse"
-        @interaction:started="this.onSearchRequest"
-        @interaction:completed="this.onSearchCompleted"
+  <div class="callouts">
+    <row :gutter="12">
+      <column :md="6">
+        <b-card class="callout">
+          <template v-slot:body>
+            <div class="callout__body">
+              <h2>
+                {{count === 0 ? 'Seu carrinho está vazio' : `Seu carrinho (${count})`}}
+              </h2>
+
+              <b-link to="/cart" text="Ir para o carrinho" icon="arrow-right" v-if="count > 0" />
+            </div>
+          </template>
+        </b-card>
+      </column>
+      
+      <column :md="6">
+        <b-card
+          tabindex="0"
+          class="callout"
+          :interactive="true"
+          @click="fetchNewestBooks"
+          @keyup.enter="fetchNewestBooks"
+        >
+          <template v-slot:body>
+            <div class="callout__body">
+              <h2>Clique aqui e veja nossos lançamentos</h2>
+            </div>
+          </template>
+        </b-card>
+      </column>
+    </row>
+  </div>
+
+  <row :gutter="12" v-if="isFirstAccess || loading">
+    <column v-if="isFirstAccess && !loading">
+      <b-info-state
+        image="/images/states/initial-state.svg"
+        message="Realize uma busca no campo acima ou clique no card para ver nossos lançamentos"
       />
+    </column>
 
-      <div class="callouts">
-        <row container :gutter="12">
-          <column :md="6">
-            <b-card class="callout">
-              <template v-slot:body>
-                <div class="callout__body">
-                  <h2>
-                    {{count === 0 ? 'Seu carrinho está vazio' : `Seu carrinho (${count})`}}
-                  </h2>
+    <column v-if="loading">
+      <b-loading-state />
+    </column>
+  </row>
 
-                  <b-link to="/cart" text="Ir para o carrinho" icon="arrow-right" v-if="count > 0" />
-                </div>
-              </template>
-            </b-card>
-          </column>
-          
-          <column :md="6">
-            <b-card
-              tabindex="0"
-              class="callout"
-              :interactive="true"
-              @click="fetchNewestBooks"
-              @keyup.enter="fetchNewestBooks"
-            >
-              <template v-slot:body>
-                <div class="callout__body">
-                  <h2>Clique aqui e veja nossos lançamentos</h2>
-                </div>
-              </template>
-            </b-card>
-          </column>
-        </row>
-      </div>
+  <row :gutter="12" v-if="!isFirstAccess && !loading && !bookshelf.search.lastResults.length">
+    <column>
+      <b-info-state
+        image="/images/states/empty-search-state.svg"
+        :message='`Não encotramos nenhum livro, autor ou palavra-chave com o termo "${lastSearchedValue}"`'
+      />
+    </column>
+  </row>
 
-      <row container :gutter="12" v-if="isFirstAccess || loading">
-        <column v-if="isFirstAccess && !loading">
-          <div class="centered">
-            Realize uma busca no campo acima ou clique no card para ver nossos lançamentos
-          </div>
-        </column>
-
-        <column v-if="loading">
-          <div class="centered">
-            <b-spinner />
-          </div>
-        </column>
-      </row>
-
-      <row container :gutter="12" v-if="!isFirstAccess && !loading && !bookshelf.search.lastResults.length">
-        <column>
-          <div class="centered">
-            Nenhum resultado encontrado para o termo "{{lastSearchedValue}}"
-          </div>
-        </column>
-      </row>
-
-      <row container :gutter="12" v-if="!loading">
-        <column :md="6" :lg="3" v-for="book in bookshelf.search.lastResults">
-          <b-book :details="book" />
-        </column>
-      </row>
-    </b-container>
-  </main>
+  <row :gutter="12" v-if="!loading">
+    <column :md="6" :lg="3" v-for="book in bookshelf.search.lastResults">
+      <b-book :details="book" />
+    </column>
+  </row>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
 import { Row, Column } from "vue-grid-responsive";
-import { BBadge, BButton, BLink, BContainer, BCard, BInput, BSpinner } from '@/components';
-import { SearchBar } from '@domains/Application/components';
+import { BBadge, BButton, BLink, BContainer, BCard, BInput } from '@/components';
+import { BSearchBar, BInfoState, BLoadingState } from '@domains/Application/components';
 import { BBook } from '@domains/Books/components';
+import { Storage } from '@/services';
 
 import BookRepository from "@domains/Books/repositories/BookRepository";
 
@@ -101,8 +92,9 @@ export default {
     BLink,
     BCard,
     BBook,
-    BSpinner,
-    SearchBar
+    BSearchBar,
+    BInfoState,
+    BLoadingState
   },
 
   data() {
@@ -118,6 +110,10 @@ export default {
     ...mapGetters("cart", ["count"]),
 
     isFirstAccess() {
+      if (Storage.get('PREVIOUS_INTERACTION')) {
+        return false;
+      }
+
       return !this.lastSearchedValue && !this.bookshelf.search.hasInteractedPreviously;
     },
   },
@@ -145,11 +141,13 @@ export default {
     },
 
     fetchNewestBooks() {
+      this.onSearchRequest();
+
       BookRepository
         .fetchNewestReleases()
         .then(({ books }) => this.storeLastSearchResults(books.map(this.decorateBookObj)))
         .catch(console.log)
-        .finally(() => this.loading = false);
+        .finally(this.onSearchCompleted);
     },
 
     decorateBookObj(book, index) {
@@ -170,16 +168,9 @@ export default {
 
 <style lang="scss" scoped>
   .callouts {
-    margin: 15px 0 30px;
+    margin: 15px 0;
   }
 
-  .centered {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    margin: 120px 0 0;
-  }
-  
   .callout {
     height: 100%;
     margin: 0 0 15px;

@@ -27,12 +27,15 @@ export default {
     },
     highlight: {
       default: false,
+    },
+    class: {
+      default: '',
     }
   },
 
   computed: {
     styles() {
-      const styles = ['card'];
+      const styles = [this.class, 'card'];
 
       if (this.interactive) styles.push('card--interactive');
       if (this.highlight) styles.push('card--highlighted');

@@ -1,80 +1,84 @@
 <template>
-  <main>
-    <b-container>
-      <row container :gutter="12">
-        <column>
-          <table class="table">
-            <thead class="table__head">
-              <tr class="table__row">
-                <th class="table__heading" >Título</th>
-                <th class="table__heading" align="center">ISBN</th>
-                <th class="table__heading" align="right">Preço (R$)</th>
-                <th class="table__heading" align="right">Quantidade</th>
-                <th class="table__heading" align="right">Total (R$)</th>
-                <th class="table__heading"></th>
-              </tr>
-            </thead>
-            <tbody class="table__body">
-              <tr class="table__row" v-if="cart.items.length === 0">
-                <td class="table__cell" colspan="6" align="center">
-                  <div>Você não possui livros no carrinho</div>
-                  <div>
-                    <!-- TODO: Add call to action to catalog -->
-                  </div>
-                </td>
-              </tr>
-              <tr class="table__row" v-for="book in cart.items" v-else>
-                <td class="table__cell">{{book.title}}</td>
-                <td class="table__cell" align="center">{{book.isbn13}}</td>
-                <td class="table__cell" align="right">{{parseToBRL(book.price) || '0,00'}}</td>
-                <td class="table__cell" align="right">
-                  <div class="custom-cell">
-                    <b-button
-                      :disabled="book.quantity === 1"
-                      @click="updateItem({ ...book, quantity: book.quantity - 1 })"
-                    >
-                      <i class="gg-math-minus"></i>
-                    </b-button>
+  <row :gutter="12" v-if="cart.items.length === 0">
+    <column>
+      <b-info-state
+        image="/images/states/empty-cart-state.svg"
+        message="Seu carrinho está vazio."
+        action="Ver catálogo"
+        @click="redirectToHomePage"
+      />
+    </column>
+  </row>
 
-                    {{book.quantity}}
+  <div v-if="cart.items.length > 0">
+    <row :gutter="12">
+      <column>
+        <table class="table">
+          <thead class="table__head">
+            <tr class="table__row">
+              <th class="table__heading" >Título</th>
+              <th class="table__heading" align="center">ISBN</th>
+              <th class="table__heading" align="right">Preço (R$)</th>
+              <th class="table__heading" align="right">Quantidade</th>
+              <th class="table__heading" align="right">Total (R$)</th>
+              <th class="table__heading"></th>
+            </tr>
+          </thead>
+          <tbody class="table__body">
+            <tr class="table__row" v-for="book in cart.items">
+              <td class="table__cell">{{book.title}}</td>
+              <td class="table__cell" align="center">{{book.isbn13}}</td>
+              <td class="table__cell" align="right">{{parseToBRL(book.price) || '0,00'}}</td>
+              <td class="table__cell" align="right">
+                <div class="custom-cell">
+                  <b-button
+                    :disabled="book.quantity === 1"
+                    @click="updateItem({ ...book, quantity: book.quantity - 1 })"
+                  >
+                    <i class="gg-math-minus"></i>
+                  </b-button>
 
-                    <b-button
-                      @click="updateItem({ ...book, quantity: book.quantity + 1 })"
-                    >
-                      <i class="gg-math-plus"></i>
-                    </b-button>
-                  </div>
-                </td>
-                <td class="table__cell" align="right">{{parseToBRL(book.price * book.quantity) || '0,00'}}</td>
-                <td class="table__cell" align="center">
-                  <div class="custom-cell">
-                    <b-button @click="removeItem(book)">
-                      Remover
-                    </b-button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </column>
-      </row>
+                  {{book.quantity}}
 
-      <row container :gutter="12" v-if="cart.items.length > 0">
-        <column :md="4" :mdOffset="8">
-          <b-callout :interactive="true">
-            <strong>Total: R${{parseToBRL(total)}}</strong>
-            <small>Clique aqui para finalizar sua compra</small>
-          </b-callout>
-        </column>
-      </row>
-    </b-container>
-  </main>
+                  <b-button
+                    @click="updateItem({ ...book, quantity: book.quantity + 1 })"
+                  >
+                    <i class="gg-math-plus"></i>
+                  </b-button>
+                </div>
+              </td>
+              <td class="table__cell" align="right">{{parseToBRL(book.price * book.quantity) || '0,00'}}</td>
+              <td class="table__cell" align="center">
+                <div class="custom-cell">
+                  <b-button @click="removeItem(book)">
+                    Remover
+                  </b-button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </column>
+    </row>
+
+    <row :gutter="12">
+      <column :md="4" :mdOffset="8">
+        <b-callout :interactive="true">
+          <strong>Total: R${{parseToBRL(total)}}</strong>
+          <small>Clique aqui para finalizar sua compra</small>
+        </b-callout>
+      </column>
+    </row>
+  </div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
 import { Row, Column } from "vue-grid-responsive";
+
+import { router } from '@/router';
 import { BButton, BCallout, BLink, BContainer, BCard } from '@/components';
+import { BInfoState } from '@domains/Application/components';
 import { CurrencyMixin } from "@/mixins";
 
 export default {
@@ -86,6 +90,7 @@ export default {
     BLink,
     BCard,
     BCallout,
+    BInfoState,
   },
 
   mixins: [CurrencyMixin],
@@ -111,6 +116,10 @@ export default {
       updateItem: 'cart/updateItem',
       removeItem: 'cart/removeItem',
     }),
+
+    redirectToHomePage() {
+      router.push('/');
+    }
   }
 }
 </script>

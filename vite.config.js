@@ -9,5 +9,6 @@ export default defineConfig({
       "@domains": path.resolve(__dirname, "./src/domains"),
     },
   },
+  assetsInclude: ["**/*.svg"],
   plugins: [vue()],
 });
