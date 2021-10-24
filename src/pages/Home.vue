@@ -3,35 +3,18 @@
     <b-container>
       <row container :gutter="12">
         <column :md="12">
-          <div class="form">
-            <b-input
-              v-model="query"
-              placeholder="Pesquise por título, autor, ISBN ou palavras-chave"
-              @keyup.enter="search(query)"
-            />
-
-            <b-button @click="search(query)" :disabled="!query">
-              Pesquisar
-            </b-button>
-          </div>
+          <h1>Livraria Flip</h1>
         </column>
       </row>
 
-      <row container :gutter="12">
-        <column :md="12">
-          <div v-if="!isFirstAccess && lastSearchedValue">
-            <small>Suas pesquisas recentes:</small>
-
-            <b-badge
-              :interactive="true"
-              :text="term"
-              @click="search(term)"
-              @keyup.enter="search(term)"
-              v-for="term in lastSearchQueries"
-            />
-          </div>
-        </column>
-      </row>
+      <search-bar
+        v-model="query"
+        :loading="loading"
+        :showLatestQueries="!isFirstAccess && !!lastSearchedValue"
+        @api:response="this.onSearchResponse"
+        @interaction:started="this.onSearchRequest"
+        @interaction:completed="this.onSearchCompleted"
+      />
 
       <div class="callouts">
         <row container :gutter="12">
@@ -102,6 +85,7 @@
 import { mapState, mapGetters, mapActions } from "vuex";
 import { Row, Column } from "vue-grid-responsive";
 import { BBadge, BButton, BLink, BContainer, BCard, BInput, BSpinner } from '@/components';
+import { SearchBar } from '@domains/Application/components';
 import { BBook } from '@domains/Books/components';
 
 import BookRepository from "@domains/Books/repositories/BookRepository";
@@ -117,7 +101,8 @@ export default {
     BLink,
     BCard,
     BBook,
-    BSpinner
+    BSpinner,
+    SearchBar
   },
 
   data() {
@@ -143,34 +128,28 @@ export default {
       storeLastSearchResults: 'bookshelf/storeLastSearchResults',
       setPreviousInteraction: 'bookshelf/setPreviousInteraction',
     }),
-    
-    search(query) {
-      if (query) {
-        this.performAPIRequest('paginate', { query, page: 1 }, ({ books }) => {
-          this.storeLastSearchResults(books.map(this.decorateBookObj))
-          this.storeSearchedValue(query);
-        });
-      }
+
+    onSearchRequest() {
+      this.loading = true;
+      this.setPreviousInteraction(true);
+    },
+
+    onSearchResponse({ books }) {
+      this.storeLastSearchResults(books.map(this.decorateBookObj))
+      this.storeSearchedValue(this.query);
+    },
+
+    onSearchCompleted() {
+      this.loading = false;
+      this.query = '';
     },
 
     fetchNewestBooks() {
-      this.performAPIRequest('fetchNewestReleases', {}, ({ books }) => {
-        this.storeLastSearchResults(books.map(this.decorateBookObj))
-      });
-    },
-
-    performAPIRequest(method, params, callback) {
-      this.loading = true;
-      this.setPreviousInteraction(true);
-     
       BookRepository
-        [method](params)
-        .then(callback)
+        .fetchNewestReleases()
+        .then(({ books }) => this.storeLastSearchResults(books.map(this.decorateBookObj)))
         .catch(console.log)
-        .finally(() => {
-          this.loading = false;
-          this.query = '';
-        });
+        .finally(() => this.loading = false);
     },
 
     decorateBookObj(book, index) {
@@ -190,16 +169,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .form {
-    align-items: center;
-    justify-content: space-between;
-    display: flex;
-    width: 100%;
-
-    .input {
-      margin: 0 5px 0 0;
-    }
-  }
   .callouts {
     margin: 15px 0 30px;
   }

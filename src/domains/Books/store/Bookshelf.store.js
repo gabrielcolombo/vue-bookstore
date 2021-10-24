@@ -15,7 +15,7 @@ const BookshelfModule = {
   state: () => ({ ...INITIAL_STATE }),
   getters: {
     lastSearchedValue(state) {
-      return [...state.search.history].pop();
+      return [...state.search.history].pop() || "";
     },
 
     lastSearchResults(state) {
@@ -52,7 +52,9 @@ const BookshelfModule = {
   },
   actions: {
     storeSearchedValue({ commit }, value) {
-      commit("setSearchHistory", value);
+      if (value) {
+        commit("setSearchHistory", value);
+      }
     },
 
     storeLastSearchResults({ commit }, value) {

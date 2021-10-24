@@ -7,11 +7,6 @@ const INITIAL_STATE = {
 
 const ApplicationModule = {
   state: () => ({ ...INITIAL_STATE }),
-  getters: {
-    lastSearchedValue(state) {
-      return [...state.search.history].pop();
-    },
-  },
   mutations: {
     setClientConnected(state, value) {
       state.client.connected = value;

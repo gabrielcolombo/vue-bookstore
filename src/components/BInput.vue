@@ -10,6 +10,7 @@
       :id="id"
       :name="name"
       :placeholder="placeholder"
+      :disabled="disabled"
       @input="onInput($event.target.value)"
       @keyup.enter="onEnter"
     />
@@ -18,7 +19,7 @@
 
 <script>
   export default {
-    props: ['label', 'modelValue', 'id', 'name', 'placeholder'],
+    props: ['label', 'modelValue', 'id', 'name', 'placeholder', 'disabled'],
 
     computed: {
       styles() {
