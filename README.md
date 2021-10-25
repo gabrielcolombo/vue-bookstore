@@ -94,5 +94,6 @@ http://localhost:3000
 - [x] Cart page
 - [x] LocalStorage
 - [x] Docker
+- [ ] Theming
 - [ ] Storybook
 - [ ] Unit tests
