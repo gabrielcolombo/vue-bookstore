@@ -3,7 +3,7 @@
     <column>
       <b-info-state
         image="/images/states/empty-cart-state.svg"
-        message="Seu carrinho está vazio."
+        message="Seu carrinho está vazio"
         action="Ver catálogo"
         @click="redirectToHomePage"
       />
