@@ -1,4 +1,4 @@
-# Vue Library
+# Vue Bookstore
 
 A book listing app made with Vue.
 
