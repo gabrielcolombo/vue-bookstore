@@ -6,7 +6,7 @@
   >
     <template v-slot:header>
       <h3 class="book__title truncate" :title="details.title">{{details.title}}</h3>
-      <small>
+      <small class="book__subtitle">
         ISBN: {{details.isbn13}}
       </small>
     </template>
@@ -85,6 +85,10 @@ export default {
 
   &__title {
     padding: 0 45px 0 0;
+  }
+
+  &__subtitle {
+    color: #646464;
   }
 
   &__details {
